@@ -1,7 +1,6 @@
 # PhoneTech Accessories — Site vitrine WordPress
 
-Activité pratique du module **Développement Full Stack et Microservices**.
-Objectif : découvrir le fonctionnement d'un CMS monolithique en réalisant un site vitrine d'accessoires téléphoniques avec WordPress.
+
 
 **Réalisé par :** Montassar Hannachi
 
@@ -40,7 +39,7 @@ docker compose ps
 
 Le site est alors accessible sur `http://localhost:8080`.
 
-Un incident a été rencontré : l'activation de WooCommerce provoquait une erreur fatale, due à la limite de mémoire PHP. Elle a été résolue en ajoutant `WP_MEMORY_LIMIT` à 512M via la variable `WORDPRESS_CONFIG_EXTRA` dans `docker-compose.yml`.
+
 
 ### 2.2 Installation de WordPress
 
@@ -88,12 +87,8 @@ Trois articles ont été publiés :
 
 ### 2.8 Référencement (Yoast SEO)
 
-Pour chaque page principale (Accueil, À propos, Contact) et chaque article, une **expression clé principale** et une **méta description** ont été renseignées. Les permaliens ont été réglés sur « Titre de la publication » (`/%postname%/`).
+Pour chaque page principale (Accueil, À propos, Contact) et chaque article, une **expression clé principale** et une **méta description** ont été renseignées. 
 
-### 2.9 Limites connues
-
-- Le formulaire de contact s'affiche correctement, mais l'envoi d'e-mails ne fonctionne pas en environnement local : le conteneur ne dispose pas de serveur de messagerie. En production, il faudrait configurer un service SMTP (par exemple avec une extension dédiée).
-- Les coordonnées et prix du site sont fictifs.
 
 ---
 
@@ -125,7 +120,7 @@ Expand-Archive -Path .\phonetech_files.zip -DestinationPath .
 docker compose up -d
 ```
 
-4. Importer la base de données (attendre quelques secondes que MariaDB soit prête) :
+4. Importer la base de données :
 
 ```powershell
 docker compose cp .\phonetech_db.sql db:/tmp/phonetech_db.sql
@@ -134,7 +129,7 @@ docker compose exec db sh -c "mariadb -u wp -pwp_pass wordpress < /tmp/phonetech
 
 5. Ouvrir `http://localhost:8080`.
 
-Le site est configuré avec l'adresse `http://localhost:8080`. Si on le restaure sous une autre URL, il faut mettre à jour les adresses du site (options `siteurl` et `home`, par exemple avec WP-CLI et `wp search-replace`).
+Le site est configuré avec l'adresse `http://localhost:8080`. 
 
 ---
 
@@ -211,15 +206,7 @@ Dans ce projet, le front-end, le back-office, la gestion des produits (WooCommer
 | Résilience | Point de défaillance unique | Meilleure tolérance aux pannes |
 | Performances | Appels internes rapides | Latence liée aux appels réseau entre services |
 
-### 5.4 Cas concret : boutique PhoneTech
 
-- **En monolithe (ce projet)** : un seul WordPress gère le catalogue, les pages, le blog et le contact. C'est simple à installer et à exporter, suffisant pour un site vitrine.
-- **En microservices** : on aurait un service Catalogue, un service Commandes, un service Paiement, un service Contenu (blog) et un service Notifications, avec une passerelle API devant. C'est plus adapté à une boutique à fort trafic ou à une équipe nombreuse, mais beaucoup plus complexe à mettre en place.
-
-### 5.5 Une solution intermédiaire : WordPress « headless »
-
-WordPress peut aussi servir uniquement de **back-office de contenu**, exposé par son **API REST**, tandis qu'une application séparée (React, Vue...) gère l'affichage. On sépare ainsi le front du back, ce qui rapproche l'architecture d'une approche découplée, sans aller jusqu'aux microservices.
-
-### 5.6 Conclusion
+### 5.4 Conclusion
 
 Pour un site vitrine de petite taille, l'architecture monolithique de WordPress est un bon choix : rapide à mettre en place, facile à exporter et à maintenir. Les microservices deviennent pertinents lorsque l'application grandit, que la charge augmente ou que plusieurs équipes doivent travailler en parallèle.
