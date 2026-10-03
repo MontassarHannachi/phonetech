@@ -187,7 +187,7 @@ Base de données MariaDB            ← conteneur « db »
 
 ### 5.2 WordPress, un exemple de monolithe
 
-Dans ce projet, le front-end, le back-office, la gestion des produits (WooCommerce), le formulaire de contact et le SEO tournent dans **la même application PHP**, avec **une seule base de données**. Les extensions s'ajoutent au même bloc : activer WooCommerce l'a d'ailleurs rendu plus lourd (erreur de mémoire rencontrée à l'activation).
+Dans ce projet, le front-end, le back-office, la gestion des produits (WooCommerce), le formulaire de contact et le SEO tournent dans **la même application PHP**, avec **une seule base de données**. Les extensions s'ajoutent au même bloc : activer WooCommerce l'a d'ailleurs rendu plus lourd.
 
 ### 5.3 Comparaison
 
