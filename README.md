@@ -96,15 +96,18 @@ Pour chaque page principale (Accueil, À propos, Contact) et chaque article, une
 
 ### 3.1 Export
 
+Depuis le dossier du projet :
+
 ```powershell
 # Base de données
 docker compose exec db mariadb-dump -u wp -pwp_pass --result-file=/tmp/phonetech_db.sql wordpress
-docker compose cp db:/tmp/phonetech_db.sql .\phonetech_db.sql
+docker compose cp db:/tmp/phonetech_db.sql ./phonetech_db.sql
 
-# Fichiers
+# Fichiers (le dossier wp_content est stocké dans un volume Docker)
+Remove-Item -Recurse -Force .\wp_content -ErrorAction SilentlyContinue
+docker compose cp wordpress:/var/www/html/wp-content ./wp_content
 Compress-Archive -Path .\wp_content -DestinationPath .\phonetech_files.zip -Force
 ```
-
 ### 3.2 Restauration sur une autre machine
 
 1. Placer `docker-compose.yml`, `phonetech_db.sql` et `phonetech_files.zip` dans un même dossier.
@@ -114,10 +117,38 @@ Compress-Archive -Path .\wp_content -DestinationPath .\phonetech_files.zip -Forc
 Expand-Archive -Path .\phonetech_files.zip -DestinationPath .
 ```
 
-3. Démarrer les conteneurs :
+3. Créer les conteneurs et le volume, sans les démarrer :
+
+```powershell
+docker compose up -d --no-start
+```
+
+4. Copier les fichiers dans le volume :
+
+```powershell
+docker compose cp .\wp_content\. wordpress:/var/www/html/wp-content/
+```
+
+5. Démarrer la base de données, puis importer la base :
+
+```powershell
+docker compose up -d db
+Start-Sleep -Seconds 30
+docker compose cp .\phonetech_db.sql db:/tmp/phonetech_db.sql
+docker compose exec db sh -c "mariadb -u wp -pwp_pass wordpress < /tmp/phonetech_db.sql"
+```
+
+6. Démarrer WordPress et corriger les droits :
 
 ```powershell
 docker compose up -d
+docker compose exec wordpress chown -R www-data:www-data /var/www/html/wp-content
+```
+
+7. Ouvrir `http://localhost:8080`.
+
+Le site est configuré avec l'adresse `http://localhost:8080`. 
+
 ```
 
 4. Importer la base de données :
