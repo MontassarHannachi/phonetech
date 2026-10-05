@@ -21,6 +21,7 @@ services:
         define('WP_MEMORY_LIMIT', '512M');
         define('WP_MAX_MEMORY_LIMIT', '512M');
     volumes:
-      - ./wp_content:/var/www/html/wp-content
+      - wp_content:/var/www/html/wp-content
 volumes:
   db_data:
+  wp_content:
